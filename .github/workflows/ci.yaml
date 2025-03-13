@@ -37,6 +37,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-tpsit-artifacts
-          path: |
-            ./TpsitProject-Java/target/*.jar
+          path: ./TpsitProject-Java/target/*.jar
           retention-days: 7
