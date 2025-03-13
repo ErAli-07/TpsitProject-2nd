@@ -1,0 +1,43 @@
+name: Java TpsitProject CI
+
+on:
+  push:
+    paths:
+      - 'TpsitProject-Java/**'
+  pull_request:
+    paths:
+      - 'TpsitProject-Java/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Test Java Project
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./TpsitProject-Java
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: mvn -B clean package
+
+      - name: Run tests
+        run: mvn -B test
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: java-investment-bank-app
+          path: TpsitProject-Java/target/*.jar
+          retention-days: 7
