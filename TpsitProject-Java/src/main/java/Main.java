@@ -5,7 +5,11 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        consoleInterface();
+        try{
+            consoleInterface();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static void consoleInterface() {
@@ -28,7 +32,7 @@ public class Main {
                 System.out.print("Select option (1-4): ");
                 int choice = scanner.nextInt();
                 scanner.nextLine();
-                
+
                 switch (choice) {
                     case 1:
                         System.out.print("Enter client name: ");

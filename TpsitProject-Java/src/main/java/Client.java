@@ -46,6 +46,7 @@ public class Client extends User {
         String filename = CLIENT_DIRECTORY + getUsername() + ".txt";
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
             writer.println(getUsername());
+            writer.println(getPassword());
             writer.println(wallet);
         } catch (IOException e) {
             System.err.println("Error saving client " + getUsername() + ": " + e.getMessage());
@@ -64,9 +65,13 @@ public class Client extends User {
 
         try (Scanner scanner = new Scanner(file)) {
             String username = scanner.nextLine();
+            String storedPassword = scanner.nextLine();
             double wallet = Double.parseDouble(scanner.nextLine());
 
-            Client client = new Client(username, password, wallet);
+            // Create client with the stored credentials
+            Client client = new Client(username, storedPassword, wallet);
+
+            // Authenticate with provided password
             if (client.authenticate(password)) {
                 System.out.println("Client " + username + " loaded successfully.");
                 return client;
@@ -74,7 +79,7 @@ public class Client extends User {
                 System.out.println("Authentication failed for client " + username);
                 return null;
             }
-        } catch (IOException e) {
+        } catch (IOException | NoSuchElementException | NumberFormatException e) {
             System.err.println("Error loading client " + clientName + ": " + e.getMessage());
             return null;
         }

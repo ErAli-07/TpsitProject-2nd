@@ -60,8 +60,7 @@ public class InvestmentManager {
     }
 
     // Process investments
-    public static void processInvestments(Client client, Account account,
-                                          List<Investment> investments, Scanner scanner) {
+    public static void processInvestments(Client client, Account account, List<Investment> investments, Scanner scanner) {
         Iterator<Investment> iterator = investments.iterator();
         while (iterator.hasNext()) {
             Investment investment = iterator.next();
