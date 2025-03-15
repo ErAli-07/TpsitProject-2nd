@@ -49,50 +49,62 @@ public class Investment {
         return isActive;
     }
 
-    // Makes month pass
+    // Skips months and fluctuates the capital
     public double processMonth(Scanner scanner) {
-        if (!isActive || currentMonth >= duration) {
+        if (!isActive) {
             return 0.0;
         }
 
-        double oldAmount = amount;
         currentMonth++;
-
+        System.out.println("\nProcessing " + type + " investment:");
         System.out.println("Month " + currentMonth + " of " + duration);
-        System.out.println("Current investment value: " + amount + " EUR");
+        System.out.println("Current investment value: " + String.format("%.2f", amount) + " EUR");
 
-        System.out.print("Skip month? (y/n): ");
-        char choice = scanner.next().charAt(0);
-        scanner.nextLine(); // Consume newline
+        double oldAmount = amount;
 
-        if (choice != 'y') {
-            if (type.equals(SHORT_TERM) || type.equals(MEDIUM_TERM) || type.equals(LONG_TERM)) {
-                // Fixed investment
-                amount += (returnRate * amount) / 100.0;
-                System.out.println("Investment grew by: " + (amount - oldAmount) + " EUR");
+        // Different processing for fixed vs risk investments
+        if (type.equals(SHORT_TERM) || type.equals(MEDIUM_TERM) || type.equals(LONG_TERM)) {
+            // Fixed investment - simple monthly interest
+            double monthlyRate = returnRate / 12.0;
+            double monthlyInterest = (monthlyRate * amount) / 100.0;
+            amount += monthlyInterest;
+            System.out.println("Monthly interest rate: " + String.format("%.2f", monthlyRate) + "%");
+            System.out.println("Investment grew by: " + String.format("%.2f", monthlyInterest) + " EUR");
+        } else {
+            // Risk investment - chance of success/failure
+            System.out.println("Success rate: " + successRate + "%");
+            System.out.println("Return rate if successful: " + returnRate + "%");
+            System.out.println("Loss rate if failed: " + lossRate + "%");
+
+            Random random = new Random();
+            double roll = random.nextDouble() * 100;
+            System.out.println("Rolling chance (need < " + successRate + "): " + String.format("%.2f", roll));
+
+            if (roll < successRate) {
+                // Success - apply monthly return rate
+                double monthlyReturn = returnRate / 12.0;
+                double gain = (monthlyReturn * amount) / 100.0;
+                amount += gain;
+                System.out.println("SUCCESS! Gained: " + String.format("%.2f", gain) + " EUR");
             } else {
-                // Risk investment
-                Random random = new Random();
-                int chance = random.nextInt(100) + 1;
-
-                if (chance <= successRate) {
-                    amount += (returnRate * amount) / 100.0;
-                    System.out.println("Investment succeeded! Gained: " + (amount - oldAmount) + " EUR");
-                } else {
-                    double loss = (lossRate * amount) / 100.0;
-                    amount -= loss;
-                    System.out.println("Investment failed! Lost: " + loss + " EUR");
-                }
+                // Failure - apply monthly loss rate
+                double monthlyLoss = lossRate / 12.0;
+                double loss = (monthlyLoss * amount) / 100.0;
+                amount -= loss;
+                System.out.println("FAILURE! Lost: " + String.format("%.2f", loss) + " EUR");
             }
         }
 
+        System.out.println("New investment value: " + String.format("%.2f", amount) + " EUR");
+
+        // Check if investment is complete
         if (currentMonth >= duration) {
             isActive = false;
-            System.out.println("Investment completed!");
-            return amount;
+            System.out.println("Investment duration completed!");
+            return amount; // Return final amount
         }
 
-        return 0.0;
+        return 0.0; // Investment still active
     }
 
     // Getters

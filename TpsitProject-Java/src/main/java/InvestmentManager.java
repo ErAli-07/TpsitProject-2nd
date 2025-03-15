@@ -59,7 +59,6 @@ public class InvestmentManager {
         return true;
     }
 
-    // Process investments
     public static void processInvestments(Client client, Account account, List<Investment> investments, Scanner scanner) {
         Iterator<Investment> iterator = investments.iterator();
         while (iterator.hasNext()) {
@@ -75,5 +74,9 @@ public class InvestmentManager {
                 iterator.remove();
             }
         }
+
+        // Add 100 euros to the client's wallet after processing investments
+        client.addToWallet(100.0);
+        System.out.println("Added 100 EUR to your wallet.");
     }
 }
