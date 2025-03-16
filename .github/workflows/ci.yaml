@@ -3,27 +3,26 @@ name: Java TpsitProject CI
 on:
   push:
     branches:
-      - develop-MultiUser  # Trigger on push to develop-MultiUser
+      - develop-MultiUser
   pull_request:
     branches:
-      - develop-MultiUser  # Trigger on pull request to develop-MultiUser
+      - develop-MultiUser
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
-      - name: Checkout code
+      - name: TpsitProject-Java
         uses: actions/checkout@v3
 
       # Print directory structure for debugging
-      - name: Print directory structure
+      - name: Print TpsitProject-Java
         run: |
           ls -alh
           find .
 
-      # Set up Java (adjust the version as needed)
+      # Set up Java
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -39,6 +38,6 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-
 
-      # Run Maven build using the pom.xml in the root directory
-      - name: Compile Java code
-        run: mvn clean compile
+      # Run Maven build (ensure pom.xml path is correct)
+      - name: Run Maven build
+        run: mvn clean compile -f backend/pom.xml  # Adjust this if pom.xml is in a subdirectory
