@@ -1,3 +1,5 @@
+package org.main;
+
 import java.io.*;
 
 public class User {
