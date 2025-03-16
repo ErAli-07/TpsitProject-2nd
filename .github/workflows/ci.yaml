@@ -1,4 +1,4 @@
-name: Java CI
+name: Java TpsitProject CI
 
 on:
   push:
@@ -7,24 +7,23 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:  # Allow manual triggering of the workflow
 
 jobs:
   build:
-    name: Build Java Project
     runs-on: ubuntu-latest
+
     steps:
       # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
-      
-      # Set up JDK (adjust the version as needed)
+
+      # Set up Java (adjust the version as needed)
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-      
+
       # Cache Maven dependencies to speed up builds
       - name: Cache Maven dependencies
         uses: actions/cache@v3
@@ -33,26 +32,26 @@ jobs:
           key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-${{ runner.os }}-
-      
+
       # Compile the Java code
       - name: Compile Java code
         run: mvn compile
 
   formatting:
-    name: Check Java Code Formatting
     runs-on: ubuntu-latest
+
     steps:
       # Checkout the repository
       - name: Checkout code
-        uses: actions/checkout@v3
-      
-      # Check Java code formatting using google-java-format
-      - name: Format Java code
+        uses: actions/checkout@v4  # v2 minimum required
+
+      # Apply google-java-format to check and format code
+      - name: Check and format Java code using google-java-format
         uses: axel-op/googlejavaformat-action@v3
         with:
           args: "--replace"
           skip-commit: true
-      
-      # Print diffs if there are any changes
+
+      # Print the diff of formatting changes (if any)
       - name: Print diffs
         run: git --no-pager diff --exit-code
