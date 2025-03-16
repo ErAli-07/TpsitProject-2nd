@@ -23,14 +23,6 @@ jobs:
           ls -alh
           find .
 
-      # Ensure pom.xml is present in the correct directory
-      - name: Ensure pom.xml is present
-        run: |
-          if [ ! -f "backend/pom.xml" ]; then
-            echo "No pom.xml found, please check your repository structure!"
-            exit 1
-          fi
-
       # Set up Java (adjust the version as needed)
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -47,6 +39,6 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-
 
-      # Run Maven build using the pom.xml in the backend directory
+      # Run Maven build using the pom.xml in the root directory
       - name: Compile Java code
-        run: mvn -f backend/pom.xml clean compile
+        run: mvn clean compile
