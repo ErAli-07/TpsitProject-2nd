@@ -3,10 +3,10 @@ name: Java TpsitProject CI
 on:
   push:
     branches:
-      - main
+      - develop-MultiUser 
   pull_request:
     branches:
-      - main
+      - develop-MultiUser 
 
 jobs:
   build:
