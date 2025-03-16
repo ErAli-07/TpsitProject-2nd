@@ -23,8 +23,6 @@ alla chiusura e riprendere da dove si era rimasti
 
 4. Aggiungere storico delle transazioni
 
-5. Possibilita’ di vedere un grafico che mostri le perdite/guadagni nel corso del tempo
+5. Inserimento di regole basilari per CI tramite workflow GitHub fornito dal docente
 
-6. Inserimento di regole basilari per CI tramite workflow GitHub fornito dal docente
-
-7. Inserimento degli unit test
+6. Inserimento degli unit test
