@@ -40,4 +40,4 @@ jobs:
 
       # Run Maven build (ensure pom.xml path is correct)
       - name: Run Maven build
-        run: mvn clean compile -f backend/pom.xml  # Adjust this if pom.xml is in a subdirectory
+        run: mvn clean compile  # Adjust this path if necessary
