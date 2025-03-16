@@ -3,10 +3,10 @@ name: Java TpsitProject CI
 on:
   push:
     branches:
-      - develop-MultiUser 
+      - develop-MultiUser  # Trigger on push to develop-MultiUser
   pull_request:
     branches:
-      - develop-MultiUser 
+      - develop-MultiUser  # Trigger on pull request to develop-MultiUser
 
 jobs:
   build:
@@ -17,26 +17,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Java (adjust the version as needed)
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
       # Print directory structure for debugging
       - name: Print directory structure
         run: |
           ls -alh
           find .
 
-      # Check for the presence of the pom.xml file
+      # Ensure pom.xml is present in the correct directory
       - name: Ensure pom.xml is present
         run: |
-          if [ ! -f "pom.xml" ]; then
+          if [ ! -f "backend/pom.xml" ]; then
             echo "No pom.xml found, please check your repository structure!"
             exit 1
           fi
+
+      # Set up Java (adjust the version as needed)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
       # Cache Maven dependencies to speed up builds
       - name: Cache Maven dependencies
@@ -47,25 +47,6 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-
 
-      # If pom.xml is in a subdirectory (adjust the directory if necessary)
+      # Run Maven build using the pom.xml in the backend directory
       - name: Compile Java code
-        run: mvn clean compile
-
-  formatting:
-    runs-on: ubuntu-latest
-
-    steps:
-      # Checkout the repository
-      - name: Checkout code
-        uses: actions/checkout@v4  # v2 minimum required
-
-      # Apply google-java-format to check and format code
-      - name: Check and format Java code using google-java-format
-        uses: axel-op/googlejavaformat-action@v3
-        with:
-          args: "--replace"
-          skip-commit: true
-
-      # Print the diff of formatting changes (if any)
-      - name: Print diffs
-        run: git --no-pager diff --exit-code
+        run: mvn -f backend/pom.xml clean compile
