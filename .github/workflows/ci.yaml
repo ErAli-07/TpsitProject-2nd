@@ -1,13 +1,12 @@
 name: Java TpsitProject CI
 
-# Trigger workflow on push or pull_request to the main branch
 on:
   push:
     branches:
-      - main  # Trigger on push to main
+      - main
   pull_request:
     branches:
-      - main  # Trigger on pull request to main
+      - main
 
 jobs:
   build:
@@ -25,6 +24,20 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      # Print directory structure for debugging
+      - name: Print directory structure
+        run: |
+          ls -alh
+          find .
+
+      # Check for the presence of the pom.xml file
+      - name: Ensure pom.xml is present
+        run: |
+          if [ ! -f "pom.xml" ]; then
+            echo "No pom.xml found, please check your repository structure!"
+            exit 1
+          fi
+
       # Cache Maven dependencies to speed up builds
       - name: Cache Maven dependencies
         uses: actions/cache@v3
@@ -34,9 +47,9 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-
 
-      # Compile the Java code
+      # If pom.xml is in a subdirectory (adjust the directory if necessary)
       - name: Compile Java code
-        run: mvn compile
+        run: mvn clean compile
 
   formatting:
     runs-on: ubuntu-latest
