@@ -23,7 +23,7 @@ public class Account {
         return isInDebt;
     }
 
-    // Deposits and Withdraw money
+    // Deposits a sum of capital
     public boolean deposit(double amount) {
         if (amount <= 0) return false;
 
@@ -32,8 +32,9 @@ public class Account {
         return true;
     }
 
+    // Withdraws a sum of capital
     public boolean withdraw(double amount) {
-        if (amount <= 0 || amount > balance) return false;
+        if (amount <= 0) return false;
 
         balance -= amount;
         updateDebtStatus();
@@ -45,6 +46,7 @@ public class Account {
         isInDebt = (balance < 0);
     }
 
+    // Prints information
     public void printInfo() {
         System.out.println("Account balance: " + balance + " EUR");
         if (isInDebt) {
