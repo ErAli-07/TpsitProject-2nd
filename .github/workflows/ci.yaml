@@ -25,38 +25,30 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '21' 
+          java-version: '21'
           distribution: 'temurin'
           cache: maven
       
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+      - name: Configure Maven compiler settings
+        run: |
+          echo "Updating Maven compiler settings to match the CI environment"
+          mvn -B org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.basedir -q -DforceStdout
+          # Create .mvn directory if it doesn't exist
+          mkdir -p .mvn
+          # Create or update maven.config file with compiler settings
+          echo "-Dmaven.compiler.release=21" > .mvn/maven.config
       
       - name: Build with Maven
-        run: mvn -B clean package -DskipTests
+        run: mvn -B clean package -Dmaven.compiler.release=21
       
       - name: Run tests
-        run: mvn -B test
-      
-      - name: Generate test report
-        if: always()
-        run: mvn surefire-report:report-only
-      
-      - name: Upload test report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports
-          path: TpsitProject-Java/target/site
-          retention-days: 7
+        run: mvn -B test -Dmaven.compiler.release=21
       
       - name: Upload build artifact
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: java-investment-bank-app
           path: TpsitProject-Java/target/*.jar
           retention-days: 7
+          if-no-files-found: warn
