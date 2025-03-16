@@ -1,3 +1,5 @@
+package org.errmili;
+
 import java.io.*;
 import java.util.*;
 
@@ -11,18 +13,19 @@ public class Client extends User {
         this.wallet = initialWallet;
     }
 
-    // Getter of Wallet
+    // Returns the sum of money in your wallet
     public double getWallet() {
         return wallet;
     }
 
-    //Add and Remove from wallet
+    // Adds money from wallet
     public void addToWallet(double amount) {
         if (amount > 0) {
             wallet += amount;
         }
     }
 
+    // Removes money from wallet
     public boolean removeFromWallet(double amount) {
         if (amount > 0 && amount <= wallet) {
             wallet -= amount;
@@ -31,7 +34,7 @@ public class Client extends User {
         return false;
     }
 
-    // Prints info
+    // Prints information
     public void printInfo() {
         System.out.println("Wallet balance for " + getUsername() + ": " + wallet + " EUR");
     }

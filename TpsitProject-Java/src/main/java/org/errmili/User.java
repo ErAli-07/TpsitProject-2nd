@@ -1,4 +1,4 @@
-import java.io.*;
+package org.errmili;
 
 public class User {
     private String username;

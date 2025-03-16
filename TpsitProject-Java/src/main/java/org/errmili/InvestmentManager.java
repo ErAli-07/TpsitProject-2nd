@@ -1,3 +1,5 @@
+package org.errmili;
+
 import java.io.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -6,7 +8,7 @@ public class InvestmentManager {
 
     private static final String INVESTMENT_DIRECTORY = "Investments/"; // Name of the directory
 
-    // Saves investments
+    // Saves the data of an Investment into a file, then after an Investment is finished the data is removed
     public static void saveInvestments(String username, List<Investment> investments) {
         File directory = new File(INVESTMENT_DIRECTORY);
         if (!directory.exists()) {
@@ -23,7 +25,7 @@ public class InvestmentManager {
         }
     }
 
-    // Loads investments
+    // Loads an Investment from a file
     public static List<Investment> loadInvestments(String username) {
         List<Investment> investments = new ArrayList<>();
         String filename = INVESTMENT_DIRECTORY + username + "_investments.txt";
@@ -61,9 +63,13 @@ public class InvestmentManager {
         return true;
     }
 
-    // Process investments and log the results
+    // Process investments and creates a file where there is the transaction history of investment
     public static void processInvestments(Client client, Account account, List<Investment> investments, Scanner scanner) {
-        // Create a file for logging investment outputs
+        File directory = new File(INVESTMENT_DIRECTORY);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
         String logFilename = INVESTMENT_DIRECTORY + client.getUsername() + "_investment_log.txt";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timestamp = dateFormat.format(new Date());
@@ -71,6 +77,7 @@ public class InvestmentManager {
         try (PrintWriter logWriter = new PrintWriter(new FileWriter(logFilename, true))) { // append mode
             logWriter.println("\n--- Investment Processing for " + client.getUsername() + " on " + timestamp + " ---");
 
+            // Use iterator to safely remove completed investments during iteration
             Iterator<Investment> iterator = investments.iterator();
             while (iterator.hasNext()) {
                 Investment investment = iterator.next();
@@ -79,13 +86,11 @@ public class InvestmentManager {
                     logWriter.println("Month " + investment.getCurrentMonth() + " of " + investment.getDuration());
                     logWriter.println("Current investment value: " + String.format("%.2f", investment.getCurrentAmount()) + " EUR");
 
-                    // Process the investment and capture the console output
                     StringWriter consoleOutput = new StringWriter();
                     PrintWriter consoleCapture = new PrintWriter(consoleOutput);
                     PrintStream originalOut = System.out;
 
                     try {
-                        // Redirect System.out to capture console output
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         PrintStream captureStream = new PrintStream(baos);
                         System.setOut(captureStream);
@@ -95,11 +100,12 @@ public class InvestmentManager {
 
                         // Get the captured output
                         String output = baos.toString();
-                        originalOut.print(output); // Print to console
-                        logWriter.print(output);   // Write to log file
+                        originalOut.print(output);
+                        logWriter.print(output);
 
                         if (result > 0) {
                             account.deposit(result);
+                            // Important: Remove the investment from the list since it's completed
                             iterator.remove();
                             String completionMsg = "Investment completed and funds returned to account: " + result + " EUR";
                             originalOut.println(completionMsg);
@@ -110,6 +116,7 @@ public class InvestmentManager {
                         System.setOut(originalOut);
                     }
                 } else {
+                    // Remove inactive investments
                     iterator.remove();
                 }
             }
@@ -123,7 +130,7 @@ public class InvestmentManager {
             logWriter.println("--- End of Investment Processing ---");
 
         } catch (IOException e) {
-            System.err.println("Error writing to investment log file: " + e.getMessage());
+            System.err.println("Error writing to investment log file: " + logFilename + " (" + e.getMessage() + ")");
         }
     }
 }

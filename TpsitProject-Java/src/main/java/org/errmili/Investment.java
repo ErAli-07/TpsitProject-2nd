@@ -1,4 +1,5 @@
-import java.io.*;
+package org.errmili;
+
 import java.util.*;
 
 public class Investment {
@@ -11,7 +12,7 @@ public class Investment {
     private boolean isActive;
     private int currentMonth;
 
-    // Constants for investment types
+    // Names of the investment types
     public static final String SHORT_TERM = "Short Term";
     public static final String MEDIUM_TERM = "Medium Term";
     public static final String LONG_TERM = "Long Term";
@@ -30,21 +31,21 @@ public class Investment {
         this.currentMonth = 0;
     }
 
-    // Creates the fixed Investment
+    // Creates a fixed Investment
     public static Investment createFixedInvestment(double amount, int duration, double returnRate, String type) {
         return new Investment(amount, duration, type, returnRate, 100.0, 0.0);
     }
 
-    // Creates the Investment with a risk amount
+    // Creates an Investment with a risk amount
     public static Investment createRiskInvestment(double amount, int duration, double successRate, double returnRate, double lossRate, String type) {
         return new Investment(amount, duration, type, returnRate, successRate, lossRate);
     }
 
+    // Returns the current amount
     public double getCurrentAmount() {
         return amount;
     }
 
-    // Returns if it's active
     public boolean isActive() {
         return isActive;
     }
@@ -64,14 +65,14 @@ public class Investment {
 
         // Different processing for fixed vs risk investments
         if (type.equals(SHORT_TERM) || type.equals(MEDIUM_TERM) || type.equals(LONG_TERM)) {
-            // Fixed investment - simple monthly interest
+
             double monthlyRate = returnRate / 12.0;
             double monthlyInterest = (monthlyRate * amount) / 100.0;
             amount += monthlyInterest;
             System.out.println("Monthly interest rate: " + String.format("%.2f", monthlyRate) + "%");
             System.out.println("Investment grew by: " + String.format("%.2f", monthlyInterest) + " EUR");
         } else {
-            // Risk investment - chance of success/failure
+
             System.out.println("Success rate: " + successRate + "%");
             System.out.println("Return rate if successful: " + returnRate + "%");
             System.out.println("Loss rate if failed: " + lossRate + "%");
@@ -97,14 +98,13 @@ public class Investment {
 
         System.out.println("New investment value: " + String.format("%.2f", amount) + " EUR");
 
-        // Check if investment is complete
         if (currentMonth >= duration) {
             isActive = false;
             System.out.println("Investment duration completed!");
-            return amount; // Return final amount
+            return amount;
         }
 
-        return 0.0; // Investment still active
+        return 0.0;
     }
 
     // Getters
@@ -120,7 +120,7 @@ public class Investment {
         return duration;
     }
 
-    // To store in file format
+    // To store into a File format
     public String toFileString() {
         return amount + "," + duration + "," + type + "," + returnRate + "," + successRate + "," + lossRate + "," + isActive + "," + currentMonth;
     }

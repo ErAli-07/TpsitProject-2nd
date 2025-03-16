@@ -1,3 +1,5 @@
+package org.errmili;
+
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
