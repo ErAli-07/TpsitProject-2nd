@@ -1,4 +1,4 @@
-package org.main;
+package org.errmili;
 
 import java.util.Scanner;
 import java.util.List;
