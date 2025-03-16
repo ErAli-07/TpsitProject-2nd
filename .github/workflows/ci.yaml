@@ -3,21 +3,22 @@ name: Java TpsitProject CI
 on:
   push:
     branches:
-      - develop-MultiUser
+      - develop-MultiUser 
   pull_request:
     branches:
-      - develop-MultiUser
+      - develop-MultiUser 
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: TpsitProject-Java
+      # Checkout the repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       # Print directory structure for debugging
-      - name: Print TpsitProject-Java
+      - name: Print directory structure
         run: |
           ls -alh
           find .
@@ -40,4 +41,5 @@ jobs:
 
       # Run Maven build (ensure pom.xml path is correct)
       - name: Run Maven build
-        run: mvn clean compile  # Adjust this path if necessary
+        run: mvn clean compile
+        working-directory: TpsitProject-Java  # Set the working directory to where pom.xml is located
